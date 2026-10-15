@@ -1,0 +1,30 @@
+{
+  "name": "proker-reporting-system",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.10.1",
+    "@vercel/blob": "^1.1.1",
+    "lucide-react": "^0.468.0",
+    "next": "^15.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "prisma": "^6.10.1",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
