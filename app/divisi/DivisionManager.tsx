@@ -1,9 +1,0 @@
-"use client";
-import { useState } from "react";
-type D={id:string;name:string;description:string|null;createdAt:string;updatedAt:string;_count:{reports:number}};
-export default function DivisionManager({initial}:{initial:D[]}) {
- const [items,setItems]=useState(initial);const [busy,setBusy]=useState(false);const [error,setError]=useState("");
- async function create(e:React.FormEvent<HTMLFormElement>){e.preventDefault();setBusy(true);setError("");const form=e.currentTarget;const res=await fetch("/api/divisions",{method:"POST",body:new FormData(form)});const d=await res.json();if(!res.ok)setError(d.error||"Gagal menambah divisi.");else{setItems([...items,d.division].sort((a,b)=>a.name.localeCompare(b.name)));form.reset();}setBusy(false);}
- async function remove(id:string){if(!confirm("Hapus divisi ini? Laporan terkait tetap ada tanpa divisi."))return;const r=await fetch(`/api/divisions/${id}`,{method:"DELETE"});if(r.ok)setItems(items.filter(x=>x.id!==id));else setError("Gagal menghapus divisi.");}
- return <><section className="admin-panel"><h2>Tambah divisi</h2><form className="form-grid compact-form" onSubmit={create}><label>Nama divisi *<input name="name" required maxLength={120}/></label><label>Deskripsi<input name="description" maxLength={500}/></label><div className="full"><button className="button primary" disabled={busy}>{busy?"Menyimpan...":"Tambah Divisi"}</button>{error&&<p className="error-message">{error}</p>}</div></form></section><section className="admin-panel"><h2>Daftar divisi ({items.length})</h2><div className="managed-list">{items.map(d=><div className="managed-item" key={d.id}><div><strong>{d.name}</strong><p>{d.description||"Tidak ada deskripsi"} · {d._count?.reports||0} laporan</p></div><button className="button danger small" onClick={()=>remove(d.id)}>Hapus</button></div>)}{items.length===0&&<p>Belum ada divisi.</p>}</div></section></>;
-}
