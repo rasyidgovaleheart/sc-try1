@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Division {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  reports     Report[]
+}
+
+model Proker {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  divisionId  String?
+  period      String?
+  status      String   @default("Aktif")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  reports     Report[]
+}
+
+model Report {
+  id           String   @id @default(cuid())
+  reporterName String
+  reporterEmail String?
+  title        String
+  description  String
+  eventDate    DateTime?
+  status       String   @default("Menunggu")
+  adminNotes   String?
+  prokerId     String?
+  divisionId   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  proker       Proker?  @relation(fields: [prokerId], references: [id], onDelete: SetNull)
+  division     Division? @relation(fields: [divisionId], references: [id], onDelete: SetNull)
+  files        Evidence[]
+}
+
+model Evidence {
+  id        String   @id @default(cuid())
+  reportId  String
+  url       String
+  pathname  String
+  filename  String
+  mimeType  String
+  size      Int
+  createdAt DateTime @default(now())
+  report    Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+}
+
+model SiteSettings {
+  id               String   @id @default("main")
+  siteName         String   @default("Laporan Program Kerja")
+  siteDescription  String   @default("Portal pelaporan program kerja.")
+  headerLogoUrl    String?
+  footerLogoUrl    String?
+  updatedAt        DateTime @updatedAt
+}
